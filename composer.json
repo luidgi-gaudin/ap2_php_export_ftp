@@ -1,0 +1,14 @@
+{
+    "name": "luidgi/ap2",
+    "require": {
+        "dompdf/dompdf": "^3.1",
+        "symfony/mailer": "^7.2",
+        "symfony/mime": "^7.2",
+        "symfony/dotenv": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}

@@ -1,0 +1,308 @@
+<div class="container mt-5">
+    <div class="row align-items-center mb-4">
+        <div class="col-lg-6">
+            <h1 class="neo-title">Liste des médicaments</h1>
+        </div>
+        <div class="col-lg-6 text-lg-end add-btn-container">
+            <a href="/medicament/create" class="neo-btn neo-btn-primary">
+                <i class="bi bi-plus-lg"></i> Ajouter un médicament
+            </a>
+        </div>
+    </div>
+
+    <div class="neo-card">
+        <?php if(isset($_SESSION['success_message'])): ?>
+            <div class="neo-alert neo-alert-success mb-4">
+                <i class="bi bi-check2-circle me-2"></i> <?= $_SESSION['success_message']; ?>
+                <?php unset($_SESSION['success_message']); ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="mb-4">
+            <div class="neo-search-container">
+                <i class="bi bi-search neo-search-icon"></i>
+                <input type="text" id="searchInput" class="neo-search-input" placeholder="Rechercher un médicament...">
+            </div>
+        </div>
+
+        <div class="table-responsive neo-table-container">
+            <table class="neo-table" id="medicamentTable">
+                <thead>
+                <tr>
+                    <th>Libellé</th>
+                    <th>Contre-indication</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if(count($medicaments) > 0): ?>
+                    <?php foreach($medicaments as $medicament): ?>
+                        <tr>
+                            <td class="medicament-libelle"><?= htmlspecialchars($medicament->getLibelle()) ?></td>
+                            <td><?= htmlspecialchars($medicament->getContrIndication()) ?></td>
+                            <td class="text-end">
+                                <div class="neo-btn-group justify-content-end">
+                                    <a href="/medicament/details/<?= $medicament->getMedicamentId() ?>" class="neo-btn neo-btn-small neo-btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="/medicament/edit/<?= $medicament->getMedicamentId() ?>" class="neo-btn neo-btn-small neo-btn-info">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="/medicament/delete/<?= $medicament->getMedicamentId() ?>"
+                                       class="neo-btn neo-btn-small neo-btn-danger"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce médicament?')">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="4" class="text-center neo-empty">Aucun médicament trouvé</td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <div id="noResults" class="neo-no-results" style="display: none;">
+            <i class="bi bi-search me-2"></i> Aucun résultat ne correspond à votre recherche
+        </div>
+    </div>
+</div>
+
+<!-- Styles néomorphiques -->
+<style>
+    :root {
+        --neo-bg-color: #e0e5ec;
+        --neo-light-shadow: rgba(255, 255, 255, 0.7);
+        --neo-dark-shadow: rgba(70, 70, 70, 0.12);
+        --neo-primary: #6a8caf;
+        --neo-info: #5eadb0;
+        --neo-danger: #e17a7a;
+        --neo-text: #566573;
+        --neo-border-radius: 15px;
+    }
+
+    body {
+        background-color: var(--neo-bg-color);
+        color: var(--neo-text);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .neo-title {
+        color: var(--neo-text);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+        padding-left: 0.5rem;
+    }
+
+    .neo-card {
+        background-color: var(--neo-bg-color);
+        border-radius: var(--neo-border-radius);
+        box-shadow: 8px 8px 16px var(--neo-dark-shadow),
+        -8px -8px 16px var(--neo-light-shadow);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .neo-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.8rem 1.5rem;
+        background-color: var(--neo-bg-color);
+        border: none;
+        border-radius: var(--neo-border-radius);
+        color: var(--neo-text);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 6px 6px 12px var(--neo-dark-shadow),
+        -6px -6px 12px var(--neo-light-shadow);
+    }
+
+    .neo-btn:hover, .neo-btn:focus {
+        box-shadow: inset 4px 4px 8px var(--neo-dark-shadow),
+        inset -4px -4px 8px var(--neo-light-shadow);
+        text-decoration: none;
+        color: var(--neo-text);
+        transform: translateY(1px);
+    }
+
+    .neo-btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        border-radius: calc(var(--neo-border-radius) - 5px);
+        margin-left: 0.5rem;
+    }
+
+    .neo-btn-primary {
+        color: var(--neo-primary);
+    }
+
+    .neo-btn-info {
+        color: var(--neo-info);
+    }
+
+    .neo-btn-danger {
+        color: var(--neo-danger);
+    }
+
+    .neo-btn-group {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .neo-table-container {
+        border-radius: var(--neo-border-radius);
+        padding: 0.5rem;
+        background-color: var(--neo-bg-color);
+        box-shadow: inset 4px 4px 8px var(--neo-dark-shadow),
+        inset -4px -4px 8px var(--neo-light-shadow);
+    }
+
+    .neo-table {
+        margin: 0;
+        color: var(--neo-text);
+        border-collapse: separate;
+        border-spacing: 0 0.75rem;
+        width: 100%;
+    }
+
+    .neo-table thead th {
+        background-color: transparent;
+        border: none;
+        color: var(--neo-text);
+        font-weight: 600;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .neo-table tbody tr {
+        background-color: var(--neo-bg-color);
+        box-shadow: 3px 3px 6px var(--neo-dark-shadow),
+        -3px -3px 6px var(--neo-light-shadow);
+        border-radius: var(--neo-border-radius);
+        transition: all 0.2s ease;
+    }
+
+    .neo-table tbody tr:hover {
+        transform: translateY(-2px);
+    }
+
+    .neo-table tbody td {
+        border: none;
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .neo-table tbody tr td:first-child {
+        border-top-left-radius: var(--neo-border-radius);
+        border-bottom-left-radius: var(--neo-border-radius);
+        font-weight: 500;
+    }
+
+    .neo-table tbody tr td:last-child {
+        border-top-right-radius: var(--neo-border-radius);
+        border-bottom-right-radius: var(--neo-border-radius);
+    }
+
+    .neo-alert {
+        border-radius: var(--neo-border-radius);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .neo-alert-success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: #2e7d32;
+        box-shadow: 3px 3px 6px var(--neo-dark-shadow),
+        -3px -3px 6px var(--neo-light-shadow);
+    }
+
+    .neo-empty {
+        font-style: italic;
+        color: #95a5a6;
+        padding: 2rem !important;
+    }
+
+    .neo-search-container {
+        position: relative;
+        margin-bottom: 0.5rem;
+    }
+
+    .neo-search-input {
+        width: 100%;
+        padding: 1.2rem 1.5rem 1.2rem 3rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: var(--neo-border-radius);
+        background-color: var(--neo-bg-color);
+        color: var(--neo-text);
+        box-shadow: inset 4px 4px 8px var(--neo-dark-shadow),
+        inset -4px -4px 8px var(--neo-light-shadow);
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .neo-search-input:focus {
+        box-shadow: inset 6px 6px 10px var(--neo-dark-shadow),
+        inset -6px -6px 10px var(--neo-light-shadow);
+    }
+
+    .neo-search-icon {
+        position: absolute;
+        left: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neo-text);
+        opacity: 0.6;
+    }
+
+    .neo-no-results {
+        text-align: center;
+        padding: 2rem;
+        color: var(--neo-text);
+        font-style: italic;
+        background-color: rgba(70, 70, 70, 0.05);
+        border-radius: var(--neo-border-radius);
+        margin-top: 1rem;
+    }
+</style>
+
+<!-- Include Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('medicamentTable');
+        const rows = table.querySelectorAll('tbody tr');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            let resultsFound = false;
+
+            rows.forEach(row => {
+                const libelle = row.querySelector('.medicament-libelle');
+                if (!libelle) return;
+
+                const text = libelle.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = "";
+                    resultsFound = true;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            noResults.style.display = resultsFound ? "none" : "block";
+        });
+    });
+</script>

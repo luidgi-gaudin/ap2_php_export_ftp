@@ -1,0 +1,12 @@
+# Activer le mode de réécriture
+RewriteEngine On
+
+# Définir la base de réécriture si nécessaire (facultatif)
+RewriteBase /
+
+# Ne pas appliquer la réécriture si le fichier ou le répertoire existe
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rediriger toutes les requêtes vers index.php avec le chemin en paramètre GET 'url'
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
